@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'core/router/app_router.dart';
 import 'di/service_locator.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
-import 'features/auth/presentation/pages/login_page.dart';
+import 'features/auth/presentation/cubit/splash_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,8 +18,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<AuthCubit>(),
+    return MultiBlocProvider(
+      providers: [
+
+        BlocProvider<AuthCubit>(
+          create: (_) => sl<AuthCubit>(),
+        ),
+
+        BlocProvider<SplashCubit>(
+          create: (_) => sl<SplashCubit>(),
+        ),
+
+      ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Unify',

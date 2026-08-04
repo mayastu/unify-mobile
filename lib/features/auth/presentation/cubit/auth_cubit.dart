@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/storage/secure_storage.dart';
 import '../../data/repositories/auth_repository.dart';
 import 'auth_state.dart';
 
@@ -23,6 +24,10 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       emit(LoginSuccess(response));
+
+      await SecureStorage.saveToken(response.data.token);
+      await SecureStorage.saveStudentId(response.data.user.id);
+      await SecureStorage.saveUserName(response.data.user.username);
     } catch (e) {
       print(e);
       print(e.runtimeType);

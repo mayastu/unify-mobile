@@ -35,14 +35,22 @@ class ErrorInterceptor extends Interceptor {
         break;
 
       case DioExceptionType.badResponse:
+        print("========== SERVER ERROR ==========");
+        print("Status Code: ${err.response?.statusCode}");
+        print("Response: ${err.response?.data}");
+        print("Headers: ${err.response?.headers}");
+        print("==================================");
+
+
+        final responseData = err.response?.data;
+        final message = (responseData is Map && responseData["message"] != null)
+            ? responseData["message"].toString()
+            : "Something went wrong";
 
         handler.reject(
           DioException(
             requestOptions: err.requestOptions,
-            error: ServerException(
-              err.response?.data["message"] ??
-                  "Something went wrong",
-            ),
+            error: ServerException(message),
           ),
         );
 

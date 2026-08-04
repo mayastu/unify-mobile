@@ -9,19 +9,37 @@ class AuthInterceptor extends Interceptor {
       RequestInterceptorHandler handler,
       ) async {
 
-    final token =
-    await SecureStorage.getToken();
+    final token = await SecureStorage.getToken();
 
-    if (token != null &&
-        token.isNotEmpty) {
-
-      options.headers["Authorization"] =
-      "Bearer $token";
+    if (token != null && token.isNotEmpty) {
+      options.headers["Authorization"] = "Bearer $token";
     }
 
-    super.onRequest(
-      options,
-      handler,
-    );
+    print("========== REQUEST ==========");
+    print("${options.method} ${options.uri}");
+    print("Headers: ${options.headers}");
+    print("Body: ${options.data}");
+    print("=============================");
+
+    handler.next(options);
   }
+
+
+
+  @override
+  void onResponse(
+      Response response,
+      ResponseInterceptorHandler handler,
+      ) {
+
+    print("========== RESPONSE ==========");
+    print("${response.requestOptions.method} ${response.requestOptions.uri}");
+    print("Status: ${response.statusCode}");
+    print(response.data);
+    print("==============================");
+
+    handler.next(response);
+  }
+
+
 }

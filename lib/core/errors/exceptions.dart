@@ -4,6 +4,9 @@ class ServerException implements Exception {
 
   ServerException(this.message);
 
+  @override
+  String toString() => message;
+
 }
 
 class TimeoutException implements Exception {}

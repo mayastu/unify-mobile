@@ -58,133 +58,136 @@ class _ForgotPasswordPageState
         },
 
         builder: (context, state) {
-          return SafeArea(
-
-            child: Padding(
-
-              padding: const EdgeInsets.all(24),
-
-              child: Form(
-
-                key: controller.formKey,
-
-                child: Column(
-
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start,
-
-                  children: [
-
-                    const SizedBox(height: 20),
-
-                    Text(
-
-                      "Forgot Password",
-
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .headlineMedium,
-
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    Text(
-
-                      "Enter your email address to receive a verification code.",
-
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .bodyMedium,
-
-                    ),
-
-                    const SizedBox(height: 32),
-
-                    AppTextField(
-
-                      controller: controller.emailController,
-
-                      hintText: "Email",
-
-                      keyboardType:
-                      TextInputType.emailAddress,
-
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty) {
-                          return "Email is required";
-                        }
-
-                        return null;
-                      },
-
-                    ),
-
-                    const SizedBox(height: 30),
-
-                    state is AuthLoading
-
-                        ? const Center(
-                        child:
-                        CircularProgressIndicator())
-
-                        : SizedBox(
-
-                      width: double.infinity,
-
-                      child: AppButton(
-
-                        text: "Send OTP",
-
-                        onPressed: () {
-                          if (controller.formKey.currentState!
-                              .validate()) {
-                            context
-                                .read<AuthCubit>()
-                                .forgotPassword(
-
-                              email: controller.emailController
-                                  .text
-                                  .trim(),
-
-                            );
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body: SafeArea(
+            
+              child: Padding(
+            
+                padding: const EdgeInsets.all(24),
+            
+                child: Form(
+            
+                  key: controller.formKey,
+            
+                  child: Column(
+            
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+            
+                    children: [
+            
+                      const SizedBox(height: 20),
+            
+                      Text(
+            
+                        "Forgot Password",
+            
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .headlineMedium,
+            
+                      ),
+            
+                      const SizedBox(height: 12),
+            
+                      Text(
+            
+                        "Enter your email address to receive a verification code.",
+            
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyMedium,
+            
+                      ),
+            
+                      const SizedBox(height: 32),
+            
+                      AppTextField(
+            
+                        controller: controller.emailController,
+            
+                        hintText: "Email",
+            
+                        keyboardType:
+                        TextInputType.emailAddress,
+            
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty) {
+                            return "Email is required";
                           }
+            
+                          return null;
                         },
-
+            
                       ),
-
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    Center(
-
-                      child: TextButton(
-
-                        onPressed: () {
-                          context.pop();
-                        },
-
-                        child: const Text(
-                          "Back to Login",
+            
+                      const SizedBox(height: 30),
+            
+                      state is AuthLoading
+            
+                          ? const Center(
+                          child:
+                          CircularProgressIndicator())
+            
+                          : SizedBox(
+            
+                        width: double.infinity,
+            
+                        child: AppButton(
+            
+                          text: "Send OTP",
+            
+                          onPressed: () {
+                            if (controller.formKey.currentState!
+                                .validate()) {
+                              context
+                                  .read<AuthCubit>()
+                                  .forgotPassword(
+            
+                                email: controller.emailController
+                                    .text
+                                    .trim(),
+            
+                              );
+                            }
+                          },
+            
                         ),
-
+            
                       ),
-
-                    )
-
-                  ],
-
+            
+                      const SizedBox(height: 20),
+            
+                      Center(
+            
+                        child: TextButton(
+            
+                          onPressed: () {
+                            context.pop();
+                          },
+            
+                          child: const Text(
+                            "Back to Login",
+                          ),
+            
+                        ),
+            
+                      )
+            
+                    ],
+            
+                  ),
+            
                 ),
-
+            
               ),
-
+            
+            
             ),
-
-
           );
 
 

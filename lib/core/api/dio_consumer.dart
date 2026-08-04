@@ -9,24 +9,18 @@ class DioConsumer implements ApiConsumer {
 
   DioConsumer({Dio? dio})
       : dio = dio ??
-            Dio(
-              BaseOptions(
-                baseUrl: EndPoints.baseUrl,
-                connectTimeout: const Duration(seconds: 30),
-                receiveTimeout: const Duration(seconds: 30),
-                sendTimeout: const Duration(seconds: 30),
-                headers: {
-                  "Accept": "application/json",
-                  "Content-Type": "application/json",
-                },
-              ),
-            ) {
-    this.dio.interceptors.add(
-          AuthInterceptor(),
-        );
-    this.dio.interceptors.add(
-      ErrorInterceptor(),
-    );
+      Dio(
+        BaseOptions(
+          baseUrl: EndPoints.baseUrl,
+          connectTimeout: const Duration(seconds: 30),
+          receiveTimeout: const Duration(seconds: 30),
+          sendTimeout: const Duration(seconds: 30),
+        ),
+      ) {
+    print("🔥 DIO CONSUMER CREATED");
+
+    this.dio.interceptors.add(AuthInterceptor());
+    this.dio.interceptors.add(ErrorInterceptor());
   }
 
   @override
@@ -44,6 +38,7 @@ class DioConsumer implements ApiConsumer {
 
   @override
   Future<dynamic> post(
+
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
