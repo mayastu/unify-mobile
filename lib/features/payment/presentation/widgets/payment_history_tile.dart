@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/models/payment_model.dart';
+import '../cubit/payment_cubit.dart';
+import '../pages/payment_details_page.dart';
 
 class PaymentHistoryTile extends StatelessWidget {
 
@@ -60,6 +63,7 @@ class PaymentHistoryTile extends StatelessWidget {
           crossAxisAlignment:
           CrossAxisAlignment.start,
 
+
           children: [
 
             const SizedBox(height:6),
@@ -79,6 +83,19 @@ class PaymentHistoryTile extends StatelessWidget {
         trailing: const Icon(
           Icons.chevron_right,
         ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: context.read<PaymentCubit>(),
+                child: PaymentDetailsPage(
+                  paymentId:int.parse( payment.id),
+                ),
+              ),
+            ),
+          );
+  },
 
       ),
 

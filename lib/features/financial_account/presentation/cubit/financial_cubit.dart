@@ -26,10 +26,11 @@ class FinancialCubit extends Cubit<FinancialState> {
           purchases: purchases,
         ),
       );
-    } catch (e) {
-      emit(
-        FinancialFailure(e.toString()),
-      );
+    } catch (e, stackTrace) {
+      print(e);
+      print(stackTrace);
+
+      emit(FinancialFailure(e.toString()));
     }
   }
 
@@ -50,12 +51,11 @@ class FinancialCubit extends Cubit<FinancialState> {
       emit(PurchaseSuccess());
 
       await getFinancialAccount();
-    } catch (e) {
-      emit(
-        PurchaseFailure(
-          e.toString(),
-        ),
-      );
+    } catch (e, stackTrace) {
+      print(e);
+      print(stackTrace);
+
+      emit(PurchaseFailure(e.toString()));
     }
   }
 }

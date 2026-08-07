@@ -64,7 +64,7 @@ class CourseCard extends StatelessWidget {
           ),
           const Icon(
             Icons.chevron_right_rounded,
-            color: AppColors.textMuted,
+            color: AppColors.textSecondary,
           ),
         ],
       ),

@@ -117,7 +117,7 @@ class PaymentSummaryCard extends StatelessWidget {
     return const SizedBox();
   }
 
-  Widget _buildInfo(String title, String value) {
+  Widget _buildInfo(String title, int value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

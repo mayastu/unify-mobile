@@ -1,5 +1,4 @@
 import 'registration_remote_datasource.dart';
-
 import '../../../../core/api/api_consumer.dart';
 import '../../../../core/api/end_points.dart';
 import '../models/available_course_model.dart';

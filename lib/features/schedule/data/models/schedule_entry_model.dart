@@ -1,41 +1,97 @@
 import '../../../classrooms/data/models/classroom_model.dart';
-import '../../../course_sections/data/models/course_section_model.dart';
+
+class ScheduleCourseModel {
+  final int id;
+  final String name;
+  final String courseCode;
+
+  const ScheduleCourseModel({
+    required this.id,
+    required this.name,
+    required this.courseCode,
+  });
+
+  factory ScheduleCourseModel.fromJson(Map<String, dynamic> json) {
+    return ScheduleCourseModel(
+      id: json['id'],
+      name: json['name'] ?? '',
+      courseCode: json['course_code'] ?? '',
+    );
+  }
+}
+
+class ScheduleInstructorModel {
+  final int id;
+  final String? name;
+
+  const ScheduleInstructorModel({
+    required this.id,
+    this.name,
+  });
+
+  factory ScheduleInstructorModel.fromJson(Map<String, dynamic> json) {
+    return ScheduleInstructorModel(
+      id: json['id'],
+      name: json['name'],
+    );
+  }
+}
 
 class ScheduleEntryModel {
-  final int id;
-  final CourseSectionModel courseSection;
-  final ClassroomModel classroom;
-  final String dayOfWeek;
+  final ScheduleCourseModel course;
+  final String sectionType;
   final String startTime;
   final String endTime;
-  final String createdAt;
+  final ClassroomModel classroom;
+  final ScheduleInstructorModel? instructor;
+  final String dayOfWeek;
 
   const ScheduleEntryModel({
-    required this.id,
-    required this.courseSection,
-    required this.classroom,
-    required this.dayOfWeek,
+    required this.course,
+    required this.sectionType,
     required this.startTime,
     required this.endTime,
-    required this.createdAt,
+    required this.classroom,
+    this.instructor,
+    required this.dayOfWeek,
   });
 
   /// [dayOverride] is the day key this entry was nested under in the
-  /// `/studentschedules` response, used as a fallback since individual
-  /// entries may omit `day_of_week` (it's already implied by the key).
+  /// `/studentschedules` response (e.g. "Monday"). The API doesn't
+  /// repeat the day inside each entry there, so we fall back to the
+  /// parent key.
   factory ScheduleEntryModel.fromJson(
-    Map<String, dynamic> json, {
-    required String dayOverride,
-  }) {
+      Map<String, dynamic> json, {
+        required String dayOverride,
+      }) {
     return ScheduleEntryModel(
-      id: json['id'],
-      courseSection: CourseSectionModel.fromJson(json['course_section']),
-      classroom: ClassroomModel.fromJson(json['classroom']),
-      dayOfWeek: json['day_of_week'] ?? dayOverride,
+      course: ScheduleCourseModel.fromJson(
+        json['course'] as Map<String, dynamic>? ?? const {},
+      ),
+      sectionType: json['section_type'] ?? '',
       startTime: json['start_time'] ?? '',
       endTime: json['end_time'] ?? '',
-      createdAt: json['created_at'] ?? '',
+      // Reused as-is: ClassroomModel already falls back safely on the
+      // fields this endpoint omits (building, floor, capacity, created_at).
+      classroom: ClassroomModel.fromJson(
+        json['classroom'] as Map<String, dynamic>? ?? const {},
+      ),
+      instructor: json['instructor'] == null
+          ? null
+          : ScheduleInstructorModel.fromJson(json['instructor']),
+      dayOfWeek: json['day_of_week'] ?? dayOverride,
     );
+  }
+
+  String get displaySectionType {
+    switch (sectionType) {
+      case 'theory':
+        return 'Theory';
+      case 'practical':
+        return 'Practical';
+      default:
+        return sectionType;
+    }
   }
 
   /// "09:00:00" -> "09:00"

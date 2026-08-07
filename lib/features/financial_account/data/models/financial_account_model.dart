@@ -1,13 +1,12 @@
-
 import '../../../profile/data/models/student_model.dart';
 
 class FinancialAccountModel {
   final int id;
   final StudentModel student;
-  final String availableBalance;
-  final String purchasedCreditHours;
-  final String usedCreditHours;
-  final String remainingCreditHours;
+  final double availableBalance;
+  final int purchasedCreditHours;
+  final int usedCreditHours;
+  final int remainingCreditHours;
   final String createdAt;
 
   const FinancialAccountModel({
@@ -22,13 +21,16 @@ class FinancialAccountModel {
 
   factory FinancialAccountModel.fromJson(Map<String, dynamic> json) {
     return FinancialAccountModel(
-      id: json['id'],
+      id: int.parse(json['id'].toString()),
       student: StudentModel.fromJson(json['student']),
-      availableBalance: json['available_balance'],
-      purchasedCreditHours: json['purchased_credit_hours'],
-      usedCreditHours: json['used_credit_hours'],
-      remainingCreditHours: json['remaining_credit_hours'],
-      createdAt: json['created_at'],
+      availableBalance: double.parse(json['available_balance'].toString()),
+      purchasedCreditHours:
+      int.parse(json['purchased_credit_hours'].toString()),
+      usedCreditHours:
+      int.parse(json['used_credit_hours'].toString()),
+      remainingCreditHours:
+      int.parse(json['remaining_credit_hours'].toString()),
+      createdAt: json['created_at'].toString(),
     );
   }
 }

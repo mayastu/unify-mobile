@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_empty.dart';
 import '../../data/models/course_registration_request.dart';
@@ -20,17 +19,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final Map<int, SectionSelection> _selections = {};
 
   void _onSectionSelected(int courseId, String type, int? sectionId) {
-    print("Selected:");
-    print("courseId = $courseId");
-    print("type = $type");
-    print("sectionId = $sectionId");
-
     setState(() {
       final courseSelection = _selections.putIfAbsent(courseId, () => {});
       courseSelection[type] = sectionId;
     });
-
-    print(_selections);
   }
 
   List<CourseRegistrationRequest> _buildRequests() {
@@ -81,7 +73,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Courses registered successfully.'),
-              backgroundColor: AppColors.success,
+              backgroundColor: AppColors.textSecondary,
             ),
           );
         }
@@ -117,14 +109,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
               );
             }
 
-            // Submitting / success / failure keep the previously loaded
-            // list on screen, so fall through to it below.
-            final loaded = state is RegistrationLoaded
-                ? state
-                : context.read<RegistrationCubit>().state
-            as RegistrationLoaded?;
-
-            final courses = loaded?.availableCourses ?? [];
+            // Every remaining state (Loaded / Submitting / SubmitSuccess /
+            // SubmitFailure / Withdraw*) carries the last-known course
+            // list on itself now, so we read it straight off `state`
+            // with no cast and no second read of the cubit.
+            final courses = state.availableCourses;
 
             if (courses.isEmpty) {
               return const AppEmpty(

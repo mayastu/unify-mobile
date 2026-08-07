@@ -51,9 +51,10 @@ class QuickActionsGrid extends StatelessWidget {
     _QuickAction(
       label: 'Financial account',
       icon: Icons.account_balance_rounded,
-      route: '/payments',
+      route: '/financial-account',
     ),
-    _QuickAction(label: 'Payments', icon: Icons.payments_outlined,route: '/payments'),
+    _QuickAction(
+        label: 'Payments', icon: Icons.payments_outlined, route: '/payments'),
   ];
 
   @override

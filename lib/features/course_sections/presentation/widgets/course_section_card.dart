@@ -30,12 +30,12 @@ class CourseSectionCard extends StatelessWidget {
                 height: 40,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.12),
+                  color: AppColors.textSecondary.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Icons.groups_2_outlined,
-                  color: AppColors.accent,
+                  color: AppColors.textSecondary,
                   size: 20,
                 ),
               ),
@@ -57,7 +57,7 @@ class CourseSectionCard extends StatelessWidget {
                     if (showCourseName) ...[
                       const SizedBox(height: 2),
                       Text(
-                        '${section.course.courseCode} · ${section.course.name}',
+                        '${section.course?.courseCode} · ${section.course?.name}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -107,7 +107,7 @@ class _InfoChip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14, color: AppColors.textMuted),
+        Icon(icon, size: 14, color: AppColors.textSecondary),
         const SizedBox(width: 4),
         Text(
           label,

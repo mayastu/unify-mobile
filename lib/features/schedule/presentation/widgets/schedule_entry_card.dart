@@ -11,8 +11,6 @@ class ScheduleEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final section = entry.courseSection;
-
     return AppCard(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +57,7 @@ class ScheduleEntryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${section.course.courseCode} · ${section.course.name}',
+                  '${entry.course.courseCode} · ${entry.course.name}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -70,7 +68,7 @@ class ScheduleEntryCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${section.sectionName} · ${section.instructor?.fullName ?? 'Instructor TBA'}',
+                  '${entry.displaySectionType} · ${entry.instructor?.name ?? 'Instructor TBA'}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -84,17 +82,17 @@ class ScheduleEntryCard extends StatelessWidget {
                     const Icon(
                       Icons.meeting_room_outlined,
                       size: 14,
-                      color: AppColors.textMuted,
+                      color: AppColors.textSecondary,
                     ),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
-                        '${entry.classroom.name} · Building ${entry.classroom.building}',
+                        entry.classroom.name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 11,
-                          color: AppColors.textMuted,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ),

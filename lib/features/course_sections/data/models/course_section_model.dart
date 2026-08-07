@@ -3,7 +3,7 @@ import 'instructor_model.dart';
 
 class CourseSectionModel {
   final int id;
-  final CourseModel course;
+  final CourseModel? course;
   final InstructorModel? instructor;
   final String sectionName;
   final int capacity;
@@ -12,8 +12,8 @@ class CourseSectionModel {
 
   const CourseSectionModel({
     required this.id,
-    required this.course,
-    required this.instructor,
+    this.course,
+    this.instructor,
     required this.sectionName,
     required this.capacity,
     required this.sectionType,
@@ -23,8 +23,9 @@ class CourseSectionModel {
   factory CourseSectionModel.fromJson(Map<String, dynamic> json) {
     return CourseSectionModel(
       id: json['id'],
-      course: CourseModel.fromJson(json['course']),
-      // Some sections may not have an instructor assigned yet.
+      course: json['course'] == null
+          ? null
+          : CourseModel.fromJson(json['course']),
       instructor: json['instructor'] == null
           ? null
           : InstructorModel.fromJson(json['instructor']),

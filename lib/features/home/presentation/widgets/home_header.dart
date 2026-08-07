@@ -38,7 +38,7 @@ class HomeHeader extends StatelessWidget {
               alignment: Alignment.center,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: AppColors.primaryGradient,
+              //  gradient: AppColors.textSecondary,
               ),
               child: Text(
                 initials,

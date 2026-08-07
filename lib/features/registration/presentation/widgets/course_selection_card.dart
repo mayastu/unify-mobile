@@ -62,7 +62,7 @@ class CourseSelectionCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.success.withOpacity(0.12),
+                    color: AppColors.textSecondary.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -70,13 +70,13 @@ class CourseSelectionCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.success,
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 )
               : const Icon(
                   Icons.expand_more_rounded,
-                  color: AppColors.textMuted,
+                  color: AppColors.textSecondary,
                 ),
           children: [
             if (availableCourse.theorySections.isNotEmpty)

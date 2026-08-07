@@ -9,12 +9,13 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
   RegistrationCubit(this.repository) : super(RegistrationInitial());
 
-  Future<void> getAvailableCourses() async {
-    emit(RegistrationLoading());
+  Future<void> getAvailableCourses({bool showLoading = true}) async {
+    if (showLoading) {
+      emit(RegistrationLoading());
+    }
 
     try {
       final courses = await repository.getAvailableCourses();
-
       emit(RegistrationLoaded(courses));
     } catch (e) {
       emit(RegistrationLoadFailure(e.toString()));
@@ -22,33 +23,37 @@ class RegistrationCubit extends Cubit<RegistrationState> {
   }
 
   Future<void> submitRegistration(
-    List<CourseRegistrationRequest> courses,
-  ) async {
-    emit(RegistrationSubmitting());
+      List<CourseRegistrationRequest> courses,
+      ) async {
+    final currentCourses = state.availableCourses;
+
+    emit(RegistrationSubmitting(currentCourses));
 
     try {
       await repository.registerCourses(courses);
 
-      emit(RegistrationSubmitSuccess());
+      final refreshed = await repository.getAvailableCourses();
 
-      // Refresh so already-registered courses drop off the list.
-      await getAvailableCourses();
+      emit(RegistrationSubmitSuccess(refreshed));
+      emit(RegistrationLoaded(refreshed));
     } catch (e) {
-      emit(RegistrationSubmitFailure(e.toString()));
+      emit(RegistrationSubmitFailure(e.toString(), currentCourses));
     }
   }
 
   /// Wired in once the "My courses" page (StudentCourse) exists to
   /// supply the studentCourse id this endpoint needs.
   Future<void> withdrawCourse(int studentCourseId) async {
-    emit(WithdrawLoading());
+    final currentCourses = state.availableCourses;
+
+    emit(WithdrawLoading(currentCourses));
 
     try {
       await repository.withdrawCourse(studentCourseId);
 
-      emit(WithdrawSuccess());
+      emit(WithdrawSuccess(currentCourses));
     } catch (e) {
-      emit(WithdrawFailure(e.toString()));
+      emit(WithdrawFailure(e.toString(), currentCourses));
     }
   }
 }

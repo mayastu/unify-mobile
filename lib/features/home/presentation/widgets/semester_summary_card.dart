@@ -56,7 +56,7 @@ class SemesterSummaryCard extends StatelessWidget {
     if (state is SemesterFailure) {
       return const Text(
         'Unable to load',
-        style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+        style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
       );
     }
 
@@ -66,7 +66,7 @@ class SemesterSummaryCard extends StatelessWidget {
       if (current == null) {
         return const Text(
           'No semesters yet',
-          style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+          style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
         );
       }
 

@@ -48,7 +48,7 @@ class CourseSectionsPage extends StatelessWidget {
           final sections = course == null
               ? allSections
               : allSections
-                  .where((section) => section.course.id == course!.id)
+                  .where((section) => section.course?.id == course!.id)
                   .toList();
 
           if (sections.isEmpty) {

@@ -10,7 +10,7 @@ class EndPoints{
   static const String semesters = "/semesters";
   static const String payments = "/payments";
   static const String financialAccount = "/financialaccounts";
-  static const String hourPurchases = "/hour-purchases";
+  static const String hourPurchases = "/hourpurchases";
   static const String courses = "/courses";
   static const String courseSections = "/coursesections";
   static const String registration = "/registration";

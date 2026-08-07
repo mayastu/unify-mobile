@@ -46,6 +46,7 @@ class PaymentHistoryList extends StatelessWidget {
 
               return PaymentHistoryTile(
                 payment: state.payments[index],
+
               );
 
             },

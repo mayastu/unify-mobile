@@ -61,7 +61,7 @@ class DaySelector extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: dayHasClasses(day)
-                          ? (selected ? Colors.white : AppColors.accent)
+                          ? (selected ? Colors.white : AppColors.textSecondary)
                           : Colors.transparent,
                     ),
                   ),

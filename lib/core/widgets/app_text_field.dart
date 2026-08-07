@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_colors.dart';
+
 class AppTextField extends StatelessWidget {
   const AppTextField({
     super.key,
@@ -26,22 +28,75 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return  Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(.03),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: TextFormField(
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
       onChanged: onChanged,
+      cursorColor: AppColors.primary,
       decoration: InputDecoration(
         hintText: hintText,
         labelText: labelText,
-        prefixIcon:
-        prefixIcon != null ? Icon(prefixIcon) : null,
+
+        filled: true,
+        fillColor: AppColors.background,
+
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 18,
+        ),
+
+        prefixIcon: prefixIcon != null
+            ? Icon(
+          prefixIcon,
+          color: AppColors.primary,
+        )
+            : null,
+
         suffixIcon: suffixIcon,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(
+            color: AppColors.border,
+          ),
+        ),
+
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(
+            color: AppColors.primary,
+            width: 2,
+          ),
+        ),
+
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(
+            color: Colors.red,
+          ),
+        ),
+
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(
+            color: Colors.red,
+            width: 2,
+          ),
         ),
       ),
-    );
+    ));
   }
 }

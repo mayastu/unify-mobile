@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:unify/features/financial_account/presentation/pages/financial_page.dart';
 import '../../di/service_locator.dart';
 import '../../features/payment/presentation/cubit/payment_cubit.dart';
 import '../../features/payment/presentation/pages/payment_page.dart';
@@ -207,6 +208,15 @@ class AppRouter {
         builder: (_, __) => BlocProvider(
           create: (_) => sl<StudentScheduleCubit>()..getSchedule(),
           child: const SchedulePage(),
+        ),
+      ),
+
+
+      GoRoute(
+        path: "/financial-account",
+        builder: (_, __) => BlocProvider(
+          create: (_) => sl<FinancialCubit>()..getFinancialAccount(),
+          child: const FinancialPage(),
         ),
       ),
 

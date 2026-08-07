@@ -22,7 +22,7 @@ class FinancialSummaryCard extends StatelessWidget {
                   Icon(
                     Icons.account_balance_wallet_rounded,
                     size: 18,
-                    color: AppColors.accent,
+                    color: AppColors.textSecondary,
                   ),
                   SizedBox(width: 6),
                   Text(
@@ -57,7 +57,7 @@ class FinancialSummaryCard extends StatelessWidget {
     if (state is FinancialFailure) {
       return const Text(
         'Unable to load',
-        style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+        style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
       );
     }
 

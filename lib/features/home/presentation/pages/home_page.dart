@@ -90,7 +90,7 @@ class HomePage extends StatelessWidget {
             },
             child: const Text(
               'Log out',
-              style: TextStyle(color: AppColors.error),
+              style: TextStyle(color: AppColors.waveBlue),
             ),
           ),
         ],

@@ -69,7 +69,7 @@ class ProfilePage extends StatelessWidget {
                           alignment: Alignment.center,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: AppColors.primaryGradient,
+                            //gradient: AppColors.primaryGradient,
                           ),
                           child: Text(
                             initials,
@@ -96,7 +96,7 @@ class ProfilePage extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.accent.withOpacity(0.15),
+                            color: AppColors.textSecondary.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -153,8 +153,8 @@ class ProfilePage extends StatelessWidget {
                       icon: const Icon(Icons.logout_rounded),
                       label: const Text('Log out'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.error,
-                        side: const BorderSide(color: AppColors.error),
+                        foregroundColor: AppColors.textSecondary,
+                        side: const BorderSide(color: AppColors.textSecondary),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -191,7 +191,7 @@ class ProfilePage extends StatelessWidget {
             },
             child: const Text(
               'Log out',
-              style: TextStyle(color: AppColors.error),
+              style: TextStyle(color: AppColors.textSecondary),
             ),
           ),
         ],

@@ -43,7 +43,7 @@ class _PurchaseHoursCardState extends State<PurchaseHoursCard> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Credit hours purchased successfully.'),
-              backgroundColor: AppColors.success,
+              backgroundColor: AppColors.textSecondary,
             ),
           );
         }

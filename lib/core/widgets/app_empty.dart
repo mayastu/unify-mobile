@@ -26,7 +26,7 @@ class AppEmpty extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 48, color: AppColors.textMuted),
+            Icon(icon, size: 48, color: AppColors.background),
             const SizedBox(height: 12),
             Text(
               message,
