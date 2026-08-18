@@ -83,6 +83,21 @@ class DioConsumer implements ApiConsumer {
   }
 
   @override
+  Future<dynamic> patch(
+      String path, {
+        dynamic data,
+        Map<String, dynamic>? queryParameters,
+      }) async {
+    final response = await dio.patch(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+    );
+
+    return response.data;
+  }
+
+  @override
   Future<dynamic> delete(
     String path, {
     dynamic data,
@@ -95,5 +110,22 @@ class DioConsumer implements ApiConsumer {
     );
 
     return response.data;
+  }
+
+  @override
+  Future<void> download(
+    String url,
+    String savePath, {
+    void Function(int received, int total)? onReceiveProgress,
+  }) async {
+    // `url` is already absolute (a `file_url` from the API, served
+    // from storage rather than under `EndPoints.baseUrl`), so this
+    // bypasses the base path entirely — Dio honors an absolute URL
+    // passed to `download()` the same way it does for `get`/`post`.
+    await dio.download(
+      url,
+      savePath,
+      onReceiveProgress: onReceiveProgress,
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_card.dart';
@@ -89,6 +90,22 @@ class CourseSectionCard extends StatelessWidget {
                 label: section.displaySectionType,
               ),
             ],
+          ),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () => context.push(
+                '/course-sections/${section.id}/materials',
+                extra: section,
+              ),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+              ),
+              icon: const Icon(Icons.folder_open_outlined, size: 16),
+              label: const Text('Materials'),
+            ),
           ),
         ],
       ),

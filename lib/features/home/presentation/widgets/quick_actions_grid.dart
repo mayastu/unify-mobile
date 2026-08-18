@@ -2,27 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/app_card.dart';
 
 class _QuickAction {
   const _QuickAction({
     required this.label,
     required this.icon,
-    this.route,
+    required this.route,
+    this.accent = AppColors.primary,
   });
 
   final String label;
   final IconData icon;
-
-  /// Left null until the destination page is built.
-  /// Tapping shows a "coming soon" snackbar instead of navigating.
   final String? route;
+  final Color accent;
 }
 
-/// Entry points to every major section of the student journey.
-///
-/// Add the route once its page exists — nothing else needs to change
-/// here or in the router besides wiring that one screen.
 class QuickActionsGrid extends StatelessWidget {
   const QuickActionsGrid({super.key});
 
@@ -34,27 +28,42 @@ class QuickActionsGrid extends StatelessWidget {
     ),
     _QuickAction(
       label: 'Courses',
-      icon: Icons.menu_book_rounded,
+      icon: Icons.menu_book_outlined,
       route: '/courses',
     ),
     _QuickAction(
       label: 'Register',
-      icon: Icons.assignment_turned_in_outlined,
+      icon: Icons.add_circle_outline_rounded,
       route: '/registration',
+      accent: AppColors.secondary,
     ),
-    _QuickAction(label: 'My courses', icon: Icons.fact_check_outlined),
+    _QuickAction(
+      label: 'My Courses',
+      icon: Icons.auto_stories_outlined,
+      route: '/my-courses',
+    ),
     _QuickAction(
       label: 'Schedule',
-      icon: Icons.schedule_rounded,
+      icon: Icons.calendar_month_outlined,
       route: '/schedule',
     ),
     _QuickAction(
-      label: 'Financial account',
-      icon: Icons.account_balance_rounded,
+      label: 'Academic Record',
+      icon: Icons.bar_chart_outlined,
+      route: '/grades',
+      accent: AppColors.secondary,
+    ),
+    _QuickAction(
+      label: 'Financial Account',
+      icon: Icons.account_balance_wallet_outlined,
       route: '/financial-account',
     ),
     _QuickAction(
-        label: 'Payments', icon: Icons.payments_outlined, route: '/payments'),
+      label: 'Payments',
+      icon: Icons.credit_card_outlined,
+      route: '/payments',
+      accent: AppColors.secondary,
+    ),
   ];
 
   @override
@@ -64,57 +73,114 @@ class QuickActionsGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: _actions.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
+        crossAxisCount: 2,
         mainAxisSpacing: 12,
         crossAxisSpacing: 12,
-        childAspectRatio: 0.95,
+        childAspectRatio: 1.12,
       ),
       itemBuilder: (context, index) {
         final action = _actions[index];
 
-        return AppCard(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-          onTap: () => _handleTap(context, action),
+        return _ActionCard(
+          action: action,
+          onTap: () {
+            if (action.route == null) return;
+
+            context.push(action.route!);
+          },
+        );
+      },
+    );
+  }
+}
+
+class _ActionCard extends StatelessWidget {
+  const _ActionCard({
+    required this.action,
+    required this.onTap,
+  });
+
+  final _QuickAction action;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(24),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: AppColors.border.withOpacity(.42),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withOpacity(.035),
+                blurRadius: 18,
+                offset: const Offset(0, 7),
+              ),
+            ],
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.08),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(action.icon, color: AppColors.primary, size: 20),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 58,
+                    height: 58,
+                    decoration: BoxDecoration(
+                      color: action.accent.withOpacity(.075),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      action.icon,
+                      size: 29,
+                      color: action.accent,
+                    ),
+                  ),
+
+                  if (action.label == 'Register' ||
+                      action.label == 'Payments')
+                    Positioned(
+                      top: -1,
+                      right: -1,
+                      child: Container(
+                        width: 9,
+                        height: 9,
+                        decoration: const BoxDecoration(
+                          color: AppColors.secondary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
               ),
-              const SizedBox(height: 8),
+
+              const SizedBox(height: 12),
+
               Text(
                 action.label,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  fontSize: 13,
+                  height: 1.15,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.primary,
                 ),
               ),
             ],
           ),
-        );
-      },
-    );
-  }
-
-  void _handleTap(BuildContext context, _QuickAction action) {
-    if (action.route != null) {
-      context.push(action.route!);
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${action.label} — coming soon')),
+        ),
+      ),
     );
   }
 }

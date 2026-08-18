@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/services/notification_service.dart';
 import '../../../../core/storage/secure_storage.dart';
 import '../../data/repositories/auth_repository.dart';
 import 'auth_state.dart';
@@ -28,6 +29,11 @@ class AuthCubit extends Cubit<AuthState> {
       await SecureStorage.saveToken(response.data.token);
       await SecureStorage.saveStudentId(response.data.user.id);
       await SecureStorage.saveUserName(response.data.user.username);
+
+      // The FCM token is usually already fetched by the time login
+      // happens (NotificationService.initialize() runs at startup);
+      // this registers it now that we have an auth token to send.
+      await NotificationService.syncDeviceToken();
     } catch (e) {
       print(e);
       print(e.runtimeType);
@@ -47,6 +53,11 @@ class AuthCubit extends Cubit<AuthState> {
     await repository.isLoggedIn();
 
     if(loggedIn){
+
+      // Covers the app-restart case: the user already has a session,
+      // and the device's FCM token (fetched again at this startup)
+      // needs to be (re)registered against it.
+      await NotificationService.syncDeviceToken();
 
       emit(
         Authenticated(),
@@ -146,6 +157,11 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
 
     try {
+
+      // Must run before repository.logout() clears the stored auth
+      // token, since removing the device token still requires a valid
+      // Authorization header.
+      await NotificationService.unregisterDeviceToken();
 
       await repository.logout();
 
