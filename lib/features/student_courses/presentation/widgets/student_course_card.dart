@@ -140,6 +140,16 @@ class StudentCourseCard extends StatelessWidget {
               ),
             ),
           ],
+          if (studentCourse.sections.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: studentCourse.sections
+                  .map((section) => _SectionChip(section: section))
+                  .toList(),
+            ),
+          ],
           const SizedBox(height: 12),
           Wrap(
             spacing: 4,
@@ -192,6 +202,45 @@ class StudentCourseCard extends StatelessWidget {
               ),
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionChip extends StatelessWidget {
+  const _SectionChip({required this.section});
+
+  final CourseSectionModel section;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withOpacity(0.06),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            section.sectionType == 'practical'
+                ? Icons.science_outlined
+                : Icons.menu_book_outlined,
+            size: 13,
+            color: AppColors.primary,
+          ),
+          const SizedBox(width: 5),
+          Text(
+            '${section.displaySectionType} · ${section.sectionName}',
+            style: const TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w700,
+              color: AppColors.primary,
+            ),
+          ),
         ],
       ),
     );

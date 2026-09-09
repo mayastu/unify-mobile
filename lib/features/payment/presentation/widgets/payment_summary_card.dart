@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../financial_account/presentation/cubit/financial_cubit.dart';
 import '../../../financial_account/presentation/cubit/financial_state.dart';
 
@@ -9,20 +9,26 @@ import '../../../financial_account/presentation/cubit/financial_state.dart';
 /// placeholder numbers — balance and credit hours reflect the real
 /// account, and refresh automatically after a purchase or payment.
 class PaymentSummaryCard extends StatelessWidget {
-  const PaymentSummaryCard({super.key});
+  const PaymentSummaryCard({super.key, required this.palette});
+
+  final AppPalette palette;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: AppColors.primary,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [palette.primary, palette.primary.withOpacity(0.78)],
+        ),
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.12),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
+            color: palette.primary.withOpacity(0.28),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
@@ -36,15 +42,15 @@ class PaymentSummaryCard extends StatelessWidget {
                   Icon(
                     Icons.account_balance_wallet_rounded,
                     color: Colors.white,
-                    size: 28,
+                    size: 26,
                   ),
                   SizedBox(width: 10),
                   Text(
-                    "Financial Account",
+                    'Financial account',
                     style: TextStyle(
                       color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
                     ),
                   ),
                 ],
@@ -63,7 +69,7 @@ class PaymentSummaryCard extends StatelessWidget {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 24),
         child: Center(
-          child: CircularProgressIndicator(color: Colors.white),
+          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
         ),
       );
     }
@@ -84,30 +90,24 @@ class PaymentSummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Available balance",
-            style: TextStyle(color: Colors.white70, fontSize: 13),
+            'Available balance',
+            style: TextStyle(color: Colors.white70, fontSize: 12.5),
           ),
           const SizedBox(height: 6),
           Text(
-            "\$${account.availableBalance}",
+            '\$${account.availableBalance.toStringAsFixed(2)}',
             style: const TextStyle(
               color: Colors.white,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w800,
               fontSize: 30,
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 20),
           Row(
             children: [
-              Expanded(
-                child: _buildInfo("Purchased", account.purchasedCreditHours),
-              ),
-              Expanded(
-                child: _buildInfo("Used", account.usedCreditHours),
-              ),
-              Expanded(
-                child: _buildInfo("Remaining", account.remainingCreditHours),
-              ),
+              Expanded(child: _buildInfo('Purchased', account.purchasedCreditHours)),
+              Expanded(child: _buildInfo('Used', account.usedCreditHours)),
+              Expanded(child: _buildInfo('Remaining', account.remainingCreditHours)),
             ],
           ),
         ],
@@ -123,14 +123,14 @@ class PaymentSummaryCard extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(color: Colors.white60, fontSize: 12),
+          style: const TextStyle(color: Colors.white60, fontSize: 11.5),
         ),
         const SizedBox(height: 4),
         Text(
-          "$value hrs",
+          '$value hrs',
           style: const TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w800,
             fontSize: 14,
           ),
         ),

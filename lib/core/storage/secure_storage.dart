@@ -81,4 +81,16 @@ class SecureStorage {
       key: studentIdKey,
     );
   }
+
+//================ Theme mode =================//
+
+  static const String themeModeKey = "theme_mode";
+
+  static Future<void> saveThemeMode(String mode) async {
+    await _storage.write(key: themeModeKey, value: mode);
+  }
+
+  static Future<String?> getThemeMode() async {
+    return await _storage.read(key: themeModeKey);
+  }
 }

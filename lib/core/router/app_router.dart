@@ -18,6 +18,7 @@ import '../../features/notifications/presentation/cubit/notification_cubit.dart'
 import '../../features/notifications/presentation/pages/notifications_page.dart';
 import '../../features/announcements/data/models/announcement_model.dart';
 import '../../features/announcements/presentation/cubit/announcement_cubit.dart';
+import '../../features/system_settings/presentation/cubit/system_settings_cubit.dart';
 import '../../features/announcements/presentation/pages/announcement_details_page.dart';
 import '../../features/payment/presentation/cubit/payment_cubit.dart';
 import '../../features/payment/presentation/pages/payment_page.dart';
@@ -47,6 +48,7 @@ import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/profile/presentation/cubit/student_cubit.dart';
 import '../../features/semesters/presentation/cubit/semester_cubit.dart';
 import '../storage/secure_storage.dart';
+import '../widgets/app_shell_scaffold.dart';
 
 class AppRouter {
   AppRouter._();
@@ -127,46 +129,107 @@ class AppRouter {
         },
       ),
 
-      // Home aggregates data from Student / Semester / Financial cubits,
-      // so it provides them locally and kicks off their first fetch here.
-      GoRoute(
-        path: "/home",
-  builder: (_, __) {
-    sl<NotificationCubit>().getUnreadCount();
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<StudentCubit>(
-          create: (_) =>
-          sl<StudentCubit>()
-            ..getProfile(),
-        ),
-        BlocProvider<SemesterCubit>(
-          create: (_) =>
-          sl<SemesterCubit>()
-            ..getSemesters(),
-        ),
-        BlocProvider<FinancialCubit>(
-          create: (_) =>
-          sl<FinancialCubit>()
-            ..getFinancialAccount(),
-        ),
-        BlocProvider<PaymentCubit>(
-          create: (_) =>
-          sl<PaymentCubit>()
-            ..getPayments(),
-        ),
-      ],
-      child: const HomePage(),
-    );
-  }),
-
-
-      GoRoute(
-        path: "/courses",
-        builder: (_, __) => BlocProvider(
-          create: (_) => sl<CourseCubit>()..getCourses(),
-          child: const CoursesPage(),
-        ),
+      // Home / Courses / Schedule / Profile share one persistent
+      // bottom nav via AppShellScaffold. Each branch keeps its own
+      // Navigator + cubit state alive, so switching tabs never
+      // re-stacks a page or re-triggers a fetch, and the active tab
+      // always matches whatever branch is actually on screen.
+      //
+      // Everything else (course details, payments, grades, ...)
+      // stays a plain top-level GoRoute below, pushed on top of the
+      // shell — the bar hiding on those is intentional drill-down
+      // behavior, not a bug.
+      StatefulShellRoute.indexedStack(
+        builder: (_, __, navigationShell) =>
+            AppShellScaffold(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              // Home aggregates data from Student / Semester / Financial
+              // cubits, so it provides them locally and kicks off their
+              // first fetch here.
+              GoRoute(
+                path: "/home",
+                builder: (_, __) {
+                  sl<NotificationCubit>().getUnreadCount();
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider<StudentCubit>(
+                        create: (_) =>
+                        sl<StudentCubit>()
+                          ..getProfile(),
+                      ),
+                      BlocProvider<SemesterCubit>(
+                        create: (_) =>
+                        sl<SemesterCubit>()
+                          ..getSemesters(),
+                      ),
+                      BlocProvider<FinancialCubit>(
+                        create: (_) =>
+                        sl<FinancialCubit>()
+                          ..getFinancialAccount(),
+                      ),
+                      BlocProvider<PaymentCubit>(
+                        create: (_) =>
+                        sl<PaymentCubit>()
+                          ..getPayments(),
+                      ),
+                      BlocProvider<StudentScheduleCubit>(
+                        create: (_) =>
+                        sl<StudentScheduleCubit>()
+                          ..getSchedule(),
+                      ),
+                      BlocProvider<AnnouncementCubit>(
+                        create: (_) =>
+                        sl<AnnouncementCubit>()
+                          ..getAnnouncements(),
+                      ),
+                      BlocProvider<RegistrationCubit>(
+                        create: (_) =>
+                        sl<RegistrationCubit>()
+                          ..getAvailableCourses(),
+                      ),
+                    ],
+                    child: const HomePage(),
+                  );
+                },
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: "/courses",
+                builder: (_, __) => BlocProvider(
+                  create: (_) => sl<CourseCubit>()..getCourses(),
+                  child: const CoursesPage(),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: "/schedule",
+                builder: (_, __) => BlocProvider(
+                  create: (_) => sl<StudentScheduleCubit>()..getSchedule(),
+                  child: const SchedulePage(),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: "/profile",
+                builder: (_, __) => BlocProvider(
+                  create: (_) => sl<StudentCubit>()..getProfile(),
+                  child: const ProfilePage(),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
 
       // The list endpoint already returns full course data, so the
@@ -263,27 +326,17 @@ class AppRouter {
       ),
 
       GoRoute(
-        path: "/schedule",
-        builder: (_, __) => BlocProvider(
-          create: (_) => sl<StudentScheduleCubit>()..getSchedule(),
-          child: const SchedulePage(),
-        ),
-      ),
-
-
-      GoRoute(
         path: "/financial-account",
-        builder: (_, __) => BlocProvider(
-          create: (_) => sl<FinancialCubit>()..getFinancialAccount(),
+        builder: (_, __) => MultiBlocProvider(
+          providers: [
+            BlocProvider<FinancialCubit>(
+              create: (_) => sl<FinancialCubit>()..getFinancialAccount(),
+            ),
+            BlocProvider<SystemSettingsCubit>(
+              create: (_) => sl<SystemSettingsCubit>()..getSettings(),
+            ),
+          ],
           child: const FinancialPage(),
-        ),
-      ),
-
-      GoRoute(
-        path: "/profile",
-        builder: (_, __) => BlocProvider(
-          create: (_) => sl<StudentCubit>()..getProfile(),
-          child: const ProfilePage(),
         ),
       ),
 

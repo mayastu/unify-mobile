@@ -5,11 +5,11 @@ import '../../../../core/widgets/app_card.dart';
 import '../../data/models/grade_breakdown_model.dart';
 import 'grade_component_tile.dart';
 
-/// Renders one section-type's worth of grade components (already
-/// ordered by `display_order`) with the student's earned/max total
-/// on top.
 class GradeSectionCard extends StatelessWidget {
-  const GradeSectionCard({super.key, required this.section});
+  const GradeSectionCard({
+    super.key,
+    required this.section,
+  });
 
   final GradeSectionBreakdownModel section;
 
@@ -19,43 +19,188 @@ class GradeSectionCard extends StatelessWidget {
       ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
 
     final myGrades = <int, StudentGradeItemModel>{
-      for (final g in section.myEntry?.grades ?? const <StudentGradeItemModel>[])
+      for (final g
+      in section.myEntry?.grades ?? const <StudentGradeItemModel>[])
         g.component.id: g,
     };
 
+    final percentage = section.maxTotal > 0
+        ? (section.earnedTotal / section.maxTotal).clamp(0.0, 1.0)
+        : 0.0;
+
     return AppCard(
+      padding: EdgeInsets.zero,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Total',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              Text(
-                '${_trim(section.earnedTotal)} / ${_trim(section.maxTotal)}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
-              ),
-            ],
+          _SectionHeader(
+            section: section,
+            percentage: percentage,
           ),
-          const Divider(height: 20),
-          ...components.map(
-            (component) => GradeComponentTile(
-              component: component,
-              gradeItem: myGrades[component.id],
+
+          if (components.isNotEmpty) ...[
+            const Divider(
+              height: 1,
+              color: AppColors.border,
+            ),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+              child: Column(
+                children: [
+                  ...components.map(
+                        (component) => GradeComponentTile(
+                      component: component,
+                      gradeItem: myGrades[component.id],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({
+    required this.section,
+    required this.percentage,
+  });
+
+  final GradeSectionBreakdownModel section;
+  final double percentage;
+
+  @override
+  Widget build(BuildContext context) {
+    final percent = (percentage * 100).round();
+
+    final Color statusColor;
+
+    if (percentage >= .6) {
+      statusColor = Colors.green;
+    } else if (percentage >= .4) {
+      statusColor = Colors.orange;
+    } else {
+      statusColor = Colors.red;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(18),
+      child: Row(
+        children: [
+          // Circular score
+          SizedBox(
+            width: 68,
+            height: 68,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  width: 68,
+                  height: 68,
+                  child: CircularProgressIndicator(
+                    value: percentage,
+                    strokeWidth: 6,
+                    backgroundColor:
+                    AppColors.primary.withOpacity(.08),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      statusColor,
+                    ),
+                  ),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '$percent%',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const Text(
+                      'score',
+                      style: TextStyle(
+                        fontSize: 9,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 16),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _sectionTitle(section.sectionType),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+
+                const SizedBox(height: 5),
+
+                Text(
+                  'Your current performance',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                Row(
+                  children: [
+                    Text(
+                      _trim(section.earnedTotal),
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: statusColor,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '/ ${_trim(section.maxTotal)}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  String _sectionTitle(String value) {
+    switch (value.toLowerCase()) {
+      case 'theory':
+        return 'Theory';
+      case 'practical':
+        return 'Practical';
+      case 'project':
+        return 'Project';
+      default:
+        return value;
+    }
   }
 
   String _trim(double value) {

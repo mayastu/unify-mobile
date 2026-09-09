@@ -20,7 +20,9 @@ class _MyObjectionsPageState extends State<MyObjectionsPage> {
   @override
   void initState() {
     super.initState();
+
     context.read<MyObjectionsCubit>().load();
+
     _scrollController.addListener(_onScroll);
   }
 
@@ -42,16 +44,20 @@ class _MyObjectionsPageState extends State<MyObjectionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text('My Objections'),
       ),
+
       body: BlocBuilder<MyObjectionsCubit, MyObjectionsState>(
         builder: (context, state) {
           if (state is MyObjectionsLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
 
           if (state is MyObjectionsFailure && state.items.isEmpty) {
@@ -59,34 +65,49 @@ class _MyObjectionsPageState extends State<MyObjectionsPage> {
               icon: Icons.wifi_off_rounded,
               message: state.message,
               actionText: 'Retry',
-              onAction: () => context.read<MyObjectionsCubit>().load(),
+              onAction: () {
+                context.read<MyObjectionsCubit>().load();
+              },
             );
           }
 
           if (state.items.isEmpty) {
             return const AppEmpty(
               icon: Icons.gavel_rounded,
-              message: 'You haven\'t submitted any grade objections yet.',
+              message:
+              'You haven\'t submitted any grade objections yet.',
             );
           }
 
           return RefreshIndicator(
-            onRefresh: () => context.read<MyObjectionsCubit>().load(),
+            onRefresh: () {
+              return context.read<MyObjectionsCubit>().load();
+            },
+
             child: ListView.separated(
               controller: _scrollController,
               padding: const EdgeInsets.all(20),
-              itemCount:
-                  state.items.length + (state is MyObjectionsLoadingMore ? 1 : 0),
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
+
+              itemCount: state.items.length +
+                  (state is MyObjectionsLoadingMore ? 1 : 0),
+
+              separatorBuilder: (_, __) {
+                return const SizedBox(height: 12);
+              },
+
               itemBuilder: (context, index) {
                 if (index >= state.items.length) {
                   return const Padding(
                     padding: EdgeInsets.symmetric(vertical: 16),
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 }
 
-                return ObjectionCard(objection: state.items[index]);
+                return ObjectionCard(
+                  objection: state.items[index],
+                );
               },
             ),
           );

@@ -54,6 +54,11 @@ import '../features/announcements/data/data_source/announcement_remote_datasourc
 import '../features/announcements/data/repositories/announcement_repository.dart';
 import '../features/announcements/data/repositories/announcement_repository_impl.dart';
 import '../features/announcements/presentation/cubit/announcement_cubit.dart';
+import '../features/system_settings/data/data_source/system_settings_remote_datasource.dart';
+import '../features/system_settings/data/data_source/system_settings_remote_datasource_impl.dart';
+import '../features/system_settings/data/repositories/system_settings_repository.dart';
+import '../features/system_settings/data/repositories/system_settings_repository_impl.dart';
+import '../features/system_settings/presentation/cubit/system_settings_cubit.dart';
 import '../features/schedule/data/data_source/student_schedule_remote_datasource.dart';
 import '../features/schedule/data/data_source/student_schedule_remote_datasource_impl.dart';
 import '../features/schedule/data/repositories/student_schedule_repository.dart';
@@ -320,5 +325,17 @@ Future<void> init() async {
 
   sl.registerFactory(
         () => AnnouncementCubit(sl()),
+  );
+
+  sl.registerLazySingleton<SystemSettingsRemoteDataSource>(
+        () => SystemSettingsRemoteDataSourceImpl(sl()),
+  );
+
+  sl.registerLazySingleton<SystemSettingsRepository>(
+        () => SystemSettingsRepositoryImpl(sl()),
+  );
+
+  sl.registerFactory(
+        () => SystemSettingsCubit(sl()),
   );
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/router/app_router.dart';
 import 'core/services/notification_service.dart';
+import 'core/theme/app_theme_controller.dart';
 import 'di/service_locator.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/auth/presentation/cubit/splash_cubit.dart';
@@ -20,6 +21,8 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   await init();
+
+  await AppThemeController.instance.load();
 
   runApp(const MyApp());
 

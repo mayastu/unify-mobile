@@ -1,132 +1,104 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../semesters/data/models/semester_model.dart';
 import '../../../semesters/presentation/cubit/semester_cubit.dart';
 import '../../../semesters/presentation/cubit/semester_state.dart';
 
 class SemesterSummaryCard extends StatelessWidget {
-  const SemesterSummaryCard({
-    super.key,
-    this.compact = false,
-  });
+  const SemesterSummaryCard({super.key, this.palette = AppPalette.light});
 
-  final bool compact;
+  final AppPalette palette;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SemesterCubit, SemesterState>(
       builder: (context, state) {
-        if (compact) {
-          return _buildCompact(state);
-        }
-
-        return _buildNormal(state);
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: palette.surface,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: palette.border),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.calendar_month_rounded,
+                    size: 17,
+                    color: palette.primary,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Current semester',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: palette.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _buildContent(state),
+            ],
+          ),
+        );
       },
     );
   }
 
-  Widget _buildCompact(SemesterState state) {
+  Widget _buildContent(SemesterState state) {
     if (state is SemesterLoading) {
-      return const _LoadingText();
+      return const SizedBox(
+        height: 22,
+        width: 22,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
     }
 
     if (state is SemesterFailure) {
-      return const _ValueText(
-        value: 'Unable to load',
+      return Text(
+        'Unable to load',
+        style: TextStyle(fontSize: 13, color: palette.textSecondary),
       );
     }
 
     if (state is SemesterSuccess) {
-      final semester = _currentOrLatest(state.semesters);
+      final SemesterModel? current = _currentOrLatest(state.semesters);
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Current semester',
-            style: TextStyle(
-              fontSize: 11,
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            semester?.name ?? 'No semesters yet',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-              color: AppColors.primary,
-            ),
-          ),
-        ],
+      if (current == null) {
+        return Text(
+          'No semesters yet',
+          style: TextStyle(fontSize: 13, color: palette.textSecondary),
+        );
+      }
+
+      return Text(
+        current.name,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w700,
+          color: palette.textPrimary,
+        ),
       );
     }
 
-    return const SizedBox();
+    return const SizedBox(height: 22);
   }
 
-  Widget _buildNormal(SemesterState state) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: _buildCompact(state),
-    );
-  }
-
-  SemesterModel? _currentOrLatest(
-      List<SemesterModel> semesters,
-      ) {
+  SemesterModel? _currentOrLatest(List<SemesterModel> semesters) {
     if (semesters.isEmpty) return null;
 
     for (final semester in semesters) {
-      if (semester.isCurrent) {
-        return semester;
-      }
+      if (semester.isCurrent) return semester;
     }
 
     return semesters.first;
-  }
-}
-
-class _LoadingText extends StatelessWidget {
-  const _LoadingText();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 100,
-      height: 16,
-      decoration: BoxDecoration(
-        color: AppColors.border,
-        borderRadius: BorderRadius.circular(6),
-      ),
-    );
-  }
-}
-
-class _ValueText extends StatelessWidget {
-  const _ValueText({
-    required this.value,
-  });
-
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      value,
-      style: const TextStyle(
-        fontSize: 13,
-        color: AppColors.textSecondary,
-      ),
-    );
   }
 }

@@ -1,6 +1,6 @@
 class EndPoints{
   const EndPoints._();
-  static const String baseUrl = 'http://192.168.1.113:8000/api';
+  static const String baseUrl = 'http://10.18.230.96:8000/api';
   static const String login="/login";
   static const String logout = '/logout';
   static const String forgotPassword = '/forgot-password';
@@ -55,5 +55,7 @@ class EndPoints{
   static const String deviceTokens = "/device-tokens";
 
   static const String announcements = "/announcements";
+
+  static const String systemSettings = "/systemsettings";
 
 }
